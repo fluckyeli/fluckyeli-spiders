@@ -209,3 +209,9 @@ __marimo__/
 /notes/output.xlsx
 /notes/output_pandas.xlsx
 /notes/sample.xlsx
+/notes/sample.csv
+/notes/data.csv.gz
+/notes/out_basic.csv
+/notes/out_dict.csv
+/notes/out_pandas.csv
+/notes/out_quotes.csv
