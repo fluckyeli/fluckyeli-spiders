@@ -1,0 +1,11 @@
+parsel
+beautifulsoup4
+lxml
+chardet
+pyquery
+selectolax
+jsonpath-ng
+openpyxl
+pandas
+execjs
+selenium
