@@ -1,0 +1,103 @@
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoId": 1265008,
+        "duration": 477,
+        "name": "C0.1.1 计算机与编程语言.mp4",
+        "defaultQuality": 1,
+        "videoImgUrl": "http://mooc1vod.stu.126.net/nos/mp4/2015/02/27/1265008_big.jpg",
+        "srtCaptions": [],
+        "cdnPoints": [
+            {
+                "ip": "111.29.28.155",
+                "isp": "yd1",
+                "ispName": "移动一"
+            },
+            {
+                "ip": "58.20.141.254",
+                "isp": "lt1",
+                "ispName": "联通一"
+            },
+            {
+                "ip": "60.222.223.61",
+                "isp": "lt2",
+                "ispName": "联通二"
+            },
+            {
+                "ip": "59.48.165.148",
+                "isp": "dx1",
+                "ispName": "电信一"
+            },
+            {
+                "ip": "58.222.46.245",
+                "isp": "dx2",
+                "ispName": "电信二"
+            }
+        ],
+        "videoThumbnail": null,
+        "videos": [
+            {
+                "quality": 1,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/mp4/2015/02/27/1265008_sd.mp4?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "mp4",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            },
+            {
+                "quality": 2,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/mp4/2015/02/27/1265008_hd.mp4?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "mp4",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            },
+            {
+                "quality": 3,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/mp4/2015/02/27/1265008_hd.mp4?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "mp4",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            },
+            {
+                "quality": 1,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/flv/2015/02/27/1265008_sd.flv?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "flv",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            },
+            {
+                "quality": 2,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/flv/2015/02/27/1265008_hd.flv?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "flv",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            },
+            {
+                "quality": 3,
+                "size": null,
+                "videoUrl": "http://mooc1vod.stu.126.net/nos/flv/2015/02/27/1265008_shd.flv?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8d8d368097f62bb022f801ff0a631acb43324f454a6bea7a03b66d8fe9d836b4d3059f726dc7bb86b92adbc3d5b34b132c15fa79174357a8b3d2463ffcae18589",
+                "format": "flv",
+                "secondaryEncrypt": false,
+                "e": false,
+                "v": null,
+                "k": null
+            }
+        ]
+    },
+    "uuid": null
+}
