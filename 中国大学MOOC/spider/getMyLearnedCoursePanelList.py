@@ -42,7 +42,7 @@ def down():
     pagination = response.json().get('result').get('pagination')
     totlePageCount = pagination.get('totlePageCount')
     totleCount = pagination.get('totleCount')
-    print(f"已选课程总数: {totleCount}")
+    print(f"获取已加入的课程总数: {totleCount}，总页数: {totlePageCount}")
     for page in range(2, totlePageCount + 1):
         print("获取第{}页课程列表".format(page))
         time.sleep(random.randint(3, 10))
