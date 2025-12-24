@@ -1,17 +1,14 @@
-import json
-import time
-
 from 中国大学MOOC.spider.initSession import *
-from DWRResExtractor import DWRObjectExtractor
+from DWRResExtractor import extract_dwr_objects
 
 """
 下载指定的课件
-【视频contentType=1】
+【文档contentType=3】
 'https://www.icourse163.org/dwr/call/plaincall/CourseBean.getLessonUnitLearnVo.dwr'
 """
 
 
-def down(unit_id='1305713611', content_id='1263014'):
+def get_file_url_type_3(unit_id='1305713611', content_id='1263014'):
     # 使用账号密码登录
     # pwd = open("../login_flow/pwd.tmp", "r", encoding="utf-8").read()
     # session = init_logined_Session_with_account('ocean_yyl@163.com', pwd)
@@ -26,7 +23,8 @@ def down(unit_id='1305713611', content_id='1263014'):
     httpSessionId = cookie_dict.get('NTESSTUDYSI')
     timestamp = int(time.time() * 1000)
     scriptSessionId = '${scriptSessionId}'
-    data = f"callCount=1\nscriptSessionId={scriptSessionId}190\nhttpSessionId={httpSessionId}\nc0-scriptName=CourseBean\nc0-methodName=getLessonUnitLearnVo\nc0-id=0\nc0-param0=number:{content_id}\nc0-param1=number:1\nc0-param2=number:0\nc0-param3=number:{unit_id}\nbatchId={timestamp}"
+    contentType = 3  # 文档类型
+    data = f"callCount=1\nscriptSessionId={scriptSessionId}190\nhttpSessionId={httpSessionId}\nc0-scriptName=CourseBean\nc0-methodName=getLessonUnitLearnVo\nc0-id=0\nc0-param0=number:{content_id}\nc0-param1=number:{contentType}\nc0-param2=number:0\nc0-param3=number:{unit_id}\nbatchId={timestamp}"
     # print(data)
 
     url = 'https://www.icourse163.org/dwr/call/plaincall/CourseBean.getLessonUnitLearnVo.dwr'
@@ -41,14 +39,16 @@ def down(unit_id='1305713611', content_id='1263014'):
     DWR 是一种用于实现 Ajax 的 Java 库，
     它允许服务器端 Java 对象的方法在客户端 JavaScript 中直接调用，并返回 JavaScript 代码作为响应。
     '''
-    return response.text.split("dwr.engine.")[0]
+    # print(response.text)
+
+    json_res = extract_dwr_objects(response.text)
+
+    # print(json.dumps(json_res, ensure_ascii=False))
+    return json_res
 
 
 if __name__ == '__main__':
-    unit_id = '1305713611'
-    content_id = '1263014'
-    res = down(unit_id, content_id)
-    print("res:",res)
-    extractor = DWRObjectExtractor()
-    json_list = extractor.extract_all_objects(res)
-    print(json.dumps(json_list, indent=2, ensure_ascii=False))
+    unit_id = '1305713609'
+    content_id = '136001'
+    res = get_file_url_type_3(unit_id, content_id)
+    print(json.dumps(res, ensure_ascii=False))

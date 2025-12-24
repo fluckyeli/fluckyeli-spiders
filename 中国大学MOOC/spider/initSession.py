@@ -11,7 +11,7 @@ from 中国大学MOOC.login_flow.enc_utils.time_utils import getTimeStampOfMilli
 from 中国大学MOOC.login_flow.iniGetCookie import getCookies_channel_0
 from 中国大学MOOC.login_flow.gtGetTk import getLoginTicket
 from 中国大学MOOC.login_flow.powGetP import get_pVParam
-from l_login import login
+from 中国大学MOOC.login_flow.l_login import login
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -127,7 +127,7 @@ def init_logined_Session_with_Cookie(cookie_file='cookies.tmp'):
 
 if __name__ == '__main__':
     # 使用账号密码登录
-    # pwd = open("../login_flow/pwd.tmp", "r", encoding="utf-8").read()
+    # pwd = open("pwd.tmp", "r", encoding="utf-8").read()
     # session = init_logined_Session_with_account('ocean_yyl@163.com', pwd)
 
     # 使用保存的 passport sso登录
