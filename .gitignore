@@ -1,6 +1,4 @@
 images/
-*.jpg
-*.png
 
 
 # Byte-compiled / optimized / DLL files
@@ -220,4 +218,4 @@ __marimo__/
 /notes/out_dict.csv
 /notes/out_pandas.csv
 /notes/out_quotes.csv
-/中国大学MOOC/curl_cmd.tmp
+*.tmp
