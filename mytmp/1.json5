@@ -1,0 +1,29 @@
+{
+  "code": 0,
+  "result": {
+    "rightsType": 0,
+    "hasTermRightsCode": null,
+    "certified": 1,
+    "rightsEndTime": null,
+    "termId": 1475273447,
+    "termMode": 0,
+    "termAchievementStatus": 10,
+    "hasEndExam": 1,
+    "hasEndHomework": 0,
+    "hasEndQuiz": 1,
+    "enrollClassroom": null,
+    "hasHistoryTerm": 1,
+    "efficientCourse": null,
+    "efficientTermId": null,
+    "enrollEfficient": null,
+    "learnMode": 100,
+    "paidTerm": 0,
+    "lastRightsTime": null,
+    "supportAiLessonPlan": 1,
+    "supportAiLessonPlanTime": 1751944431081,
+    "zhiHuiGaoJiaoTerm": null
+  },
+  "message": "",
+  "traceId": "",
+  "sampled": false
+}
