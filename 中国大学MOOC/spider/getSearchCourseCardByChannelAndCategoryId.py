@@ -74,8 +74,17 @@ def get_course_list(category_channel_id=2001):
     return res_course_list
 
 if __name__ == '__main__':
-    category_channel_id = 2001 # 国家精品课程
+    # category_channel_id = 2001 # 国家精品课程
+    # category_channel_id = 143001 # 人工智能课程
+    # category_channel_id = 30001 # 兴趣技能课程
+    # category_channel_id = 3002 # 计算机课程
+    # category_channel_id = 34001 # 音乐与艺术课程
+    # category_channel_id = 3004 # 经济管理课程
+    # category_channel_id = 3003 # 理学工学农学
+    # category_channel_id = 3008 # 医学与保健
+    # category_channel_id = 3007 # 心理学
+    category_channel_id = 3005 # 文史哲法
     res_course_list = get_course_list(category_channel_id)
-    with open('国家精品2001.json', encoding='utf-8', mode='w') as fw:
+    with open('文史哲法_3005.json', encoding='utf-8', mode='w') as fw:
         fw.write(json.dumps(res_course_list, indent=4, ensure_ascii=False))
     print("总共获取的课程信息数: {}".format(len(res_course_list)))
