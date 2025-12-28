@@ -3,7 +3,6 @@ import random
 import time
 import os
 
-from 中国大学MOOC.spider.join_course.startTermLearn import join_term_learn
 from 中国大学MOOC.spider.join_course.checkTermLearn import check_term_learned
 
 """
@@ -51,5 +50,5 @@ def check_joined(filename):
 
 
 if __name__ == '__main__':
-    filename = '2001.json'
+    filename = '人工智能143001.json'
     check_joined(filename)

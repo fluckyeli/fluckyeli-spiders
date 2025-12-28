@@ -1,11 +1,10 @@
-import json
-
-from 中国大学MOOC.spider.initSession import *
-
 """
 获取已选课程列表
 https://www.icourse163.org/web/j/learnerCourseRpcBean.getMyLearnedCoursePanelList.rpc
 """
+import json
+
+from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 
 
 def down():
@@ -17,7 +16,7 @@ def down():
     # session = init_logined_Session_with_passport()
 
     # 使用登录后保存的 Cookie
-    session = init_logined_Session_with_Cookie()
+    session = init_logined_session()
     cookie_dict = {cookie.name: cookie.value for cookie in session.cookies}
 
     params = {

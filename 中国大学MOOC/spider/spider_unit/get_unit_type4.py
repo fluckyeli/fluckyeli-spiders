@@ -1,5 +1,7 @@
-from 中国大学MOOC.spider.initSession import *
+import time
+
 from DWRResExtractor import extract_dwr_objects
+from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 
 """
 下载指定的课件
@@ -17,7 +19,7 @@ def get_html_content_type_4(unit_id='1305713611', content_id='1263014'):
     # session = init_logined_Session_with_passport()
 
     # 使用登录后保存的 Cookie
-    session = init_logined_Session_with_Cookie()
+    session = init_logined_session()
     cookie_dict = {cookie.name: cookie.value for cookie in session.cookies}
 
     httpSessionId = cookie_dict.get('NTESSTUDYSI')

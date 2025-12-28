@@ -4,7 +4,6 @@ import time
 import os
 
 from 中国大学MOOC.spider.join_course.startTermLearn import join_term_learn
-from 中国大学MOOC.spider.join_course.checkTermLearn import check_term_learned
 
 """
 参加所有课程的脚本
@@ -32,40 +31,39 @@ def join_lessions(filename):
         json_list = json_list[start_index:]
         current_count = start_index
         for item in json_list:
+            # print(json.dumps(item, ensure_ascii=False))
             current_count += 1
-            time.sleep(random.randint(1, 10))
+            time.sleep(random.randint(1, 3))
             mocCourseBaseCardVo = item['mocCourseBaseCardVo']
+            if not mocCourseBaseCardVo:
+                print("课程加入异常:",json.dumps(item, ensure_ascii=False))
+                continue
             lession_id = mocCourseBaseCardVo['id']
             lession_name = mocCourseBaseCardVo['name']
             schoolName = mocCourseBaseCardVo['schoolName']
             schoolSN = mocCourseBaseCardVo['schoolSN']
             currentTermId = mocCourseBaseCardVo['currentTermId']
-            closeVisableStatus = mocCourseBaseCardVo['closeVisableStatus']
+            # closeVisableStatus = mocCourseBaseCardVo['closeVisableStatus'] # 1已关闭选课，0未关闭。并不完全正确
             lession_url = f'{base_url}/{schoolSN}-{lession_id}'
-            if closeVisableStatus == 1:
+            try:
+                learn_id = _join_term(currentTermId)
+                if learn_id:
+                    fw.write(
+                        f'{current_count}/{sum_count}|||成功参加课程【{schoolName}】《{lession_name}》|||{lession_url}\n')
+                    print(
+                        f'{current_count}/{sum_count}|||成功参加课程【{schoolName}】《{lession_name}》|||{lession_url}\n')
+                else:
+                    fw.write(
+                        f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败|||{lession_url}\n')
+                    print(
+                        f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败|||{lession_url}\n')
+            except Exception as e:
                 fw.write(
-                    f'{current_count}/{sum_count}|||课程【{schoolName}】《{lession_name}》已关闭选课，跳过|||{lession_url}\n')
+                    f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败，原因{str(e).replace("\n", " ")}\n')
                 print(
-                    f'{current_count}/{sum_count}|||课程【{schoolName}】《{lession_name}》已关闭选课，跳过|||{lession_url}\n')
-                continue
-            else:
-                try:
-                    learn_id = _join_term(currentTermId)
-                    if learn_id:
-                        fw.write(
-                            f'{current_count}/{sum_count}|||成功参加课程【{schoolName}】《{lession_name}》|||{lession_url}\n')
-                        print(
-                            f'{current_count}/{sum_count}|||成功参加课程【{schoolName}】《{lession_name}》|||{lession_url}\n')
-                    else:
-                        fw.write(
-                            f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败|||{lession_url}\n')
-                        print(
-                            f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败|||{lession_url}\n')
-                except Exception as e:
-                    fw.write(f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败，原因{str(e)}\n')
-                    print(f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败，原因{str(e)}\n')
+                    f'{current_count}/{sum_count}|||参加课程【{schoolName}】《{lession_name}》失败，原因{str(e).replace("\n", "")}\n')
 
 
 if __name__ == '__main__':
-    filename = '2001.json'
+    filename = '经济管理3004.json'
     join_lessions(filename)

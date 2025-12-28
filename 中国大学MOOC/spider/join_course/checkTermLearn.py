@@ -1,10 +1,13 @@
-from 中国大学MOOC.spider.initSession import *
+import time
+
+from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 from 中国大学MOOC.spider.spider_unit.DWRResExtractor import extract_dwr_objects
 
 """
 check 是否已参加此课程学习
 注意：此处参数 current_term_id 与 课程id 并不是同一个字段
 """
+
 
 def check_term_learned(current_term_id):
     # 使用账号密码登录
@@ -15,7 +18,7 @@ def check_term_learned(current_term_id):
     # session = init_logined_Session_with_passport()
 
     # 使用登录后保存的 Cookie
-    session = init_logined_Session_with_Cookie()
+    session = init_logined_session()
     cookie_dict = {cookie.name: cookie.value for cookie in session.cookies}
 
     httpSessionId = cookie_dict.get('NTESSTUDYSI')
@@ -42,7 +45,7 @@ def check_term_learned(current_term_id):
 
     json_res = extract_dwr_objects(response.text)
     # print(json_res)
-    return  json_res == 0
+    return json_res == 0
 
 
 if __name__ == '__main__':

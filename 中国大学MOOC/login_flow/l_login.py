@@ -1,18 +1,19 @@
 import json
 import random
 import time
-from http.cookiejar import MozillaCookieJar
+
 from requests import Session
-from 中国大学MOOC.login_flow.enc_utils.sm4 import sm4_encrypt
+
 from 中国大学MOOC.login_flow.enc_utils.rsa_PKCS_1v1_5 import rsa_encrypt
 from 中国大学MOOC.login_flow.enc_utils.rtid import generate_rtid
+from 中国大学MOOC.login_flow.enc_utils.sm4 import sm4_encrypt
 from 中国大学MOOC.login_flow.enc_utils.time_utils import getTimeStampOfMilliSeconds
-from 中国大学MOOC.login_flow.iniGetCookie import getCookies_channel_0
 from 中国大学MOOC.login_flow.gtGetTk import getLoginTicket
+from 中国大学MOOC.login_flow.iniGetCookie import getCookies_channel_0
 from 中国大学MOOC.login_flow.powGetP import get_pVParam
 
 
-def login(email, password, cookies, tk, pVParam):
+def login(session: Session, email, password, cookies, tk, pVParam):
     pub_key = """-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5gsH+AA4XWONB5TDcUd+xCz7ejOFHZKlcZDx+pF1i7Gsvi1vjyJoQhRtRSn950x498VUkx7rUxg1/ScBVfrRxQOZ8xFBye3pjAzfb22+RCuYApSVpJ3OO3KsEuKExftz9oFBv3ejxPlYc5yq7YiBO8XlTnQN0Sa4R4qhPO3I2MQIDAQAB-----END PUBLIC KEY-----"""
 
     data = {
@@ -56,19 +57,11 @@ def login(email, password, cookies, tk, pVParam):
         'host': 'reg.icourse163.org',
     }
 
-    session = Session()
-    cookie_jar = MozillaCookieJar()
-    session.cookies = cookie_jar
     response = session.post('https://reg.icourse163.org/dl/zj/mail/l', headers=headers, cookies=cookies,
-                             json=json_data)
+                            json=json_data)
 
-    if(response.json().get('ret') == '201'):
+    if (response.json().get('ret') == '201'):
         print("登录成功！获取网易通行证：")
-
-    print("passport:", session.cookies)
-    cookie_jar.save('passport.tmp',ignore_discard=True,ignore_expires=True)
-
-    return session.cookies
 
 
 if __name__ == '__main__':

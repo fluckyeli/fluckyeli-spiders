@@ -14,7 +14,6 @@ def get_course_list(category_channel_id=2001):
         'edu-script-token': 'c17011b05edc4addba6f2bf3f34ebf0d',
         'origin': 'https://www.icourse163.org',
         'priority': 'u=1, i',
-        'referer': 'https://www.icourse163.org/channel/2001.htm',
         'sec-ch-ua': '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Windows"',
@@ -85,6 +84,6 @@ if __name__ == '__main__':
     # category_channel_id = 3007 # 心理学
     category_channel_id = 3005 # 文史哲法
     res_course_list = get_course_list(category_channel_id)
-    with open('文史哲法_3005.json', encoding='utf-8', mode='w') as fw:
+    with open('join_course/文史哲法_3005.json', encoding='utf-8', mode='w') as fw:
         fw.write(json.dumps(res_course_list, indent=4, ensure_ascii=False))
     print("总共获取的课程信息数: {}".format(len(res_course_list)))

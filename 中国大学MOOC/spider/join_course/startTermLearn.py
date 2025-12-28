@@ -1,4 +1,6 @@
-from 中国大学MOOC.spider.initSession import *
+import time
+
+from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 from 中国大学MOOC.spider.spider_unit.DWRResExtractor import extract_dwr_objects
 
 """
@@ -8,15 +10,8 @@ from 中国大学MOOC.spider.spider_unit.DWRResExtractor import extract_dwr_obje
 
 
 def join_term_learn(current_term_id):
-    # 使用账号密码登录
-    # pwd = open("pwd.tmp", "r", encoding="utf-8").read()
-    # session = init_logined_Session_with_account('ocean_yyl@163.com', pwd)
-
-    # 使用保存的 passport sso登录
-    # session = init_logined_Session_with_passport()
-
     # 使用登录后保存的 Cookie
-    session = init_logined_Session_with_Cookie()
+    session = init_logined_session()
     cookie_dict = {cookie.name: cookie.value for cookie in session.cookies}
 
     httpSessionId = cookie_dict.get('NTESSTUDYSI')
@@ -31,7 +26,6 @@ def join_term_learn(current_term_id):
             'c0-param1=null:null\n'
             f'batchId={timestamp}'
             )
-
     url = 'https://www.icourse163.org/dwr/call/plaincall/CourseBean.startTermLearn.dwr'
     response = session.post(
         url,
@@ -51,6 +45,6 @@ def join_term_learn(current_term_id):
 
 
 if __name__ == '__main__':
-    currentTermId = '1475968443'
+    currentTermId = '1470036447'
     learn_id = join_term_learn(currentTermId)
     print(learn_id)
