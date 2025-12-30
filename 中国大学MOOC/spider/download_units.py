@@ -16,6 +16,32 @@ from spider_unit.get_unit_type6 import get_forum_type_6
 from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 
 
+def _clean_filename(filename):
+    # 去除文件名不允许的特殊字符
+    return (filename.replace('？', '').replace('：', '').replace('、', '').replace('，', '').replace('！', '')
+            .replace('*', '').replace('"', '').replace('<', '').replace('>', '')
+            .replace('|', '').replace('\\', '').replace('/', '').strip())
+
+
+def _mkdir(base, dir):
+    # 去除文件夹不允许的特殊字符
+    cleaned_dir = _clean_filename(dir)
+    path_dir = os.path.join(base, cleaned_dir)
+    is_exists = os.path.exists(path_dir)
+    if not is_exists:
+        os.makedirs(path_dir)
+        print(f'创建文件夹 : {path_dir}')
+        return path_dir
+    else:
+        print(f'文件夹 {path_dir} 已存在。')
+        return path_dir
+
+
+def _join_path(base, filename):
+    cleaned_filename = _clean_filename(filename)
+    return os.path.join(base, cleaned_filename)
+
+
 def _down_unit(unit_id, content_id, content_type, filename):
     if content_type == 1:
         json_res = get_video_url_type_1(unit_id, content_id)
@@ -103,37 +129,29 @@ def download_units(term_id, base_dir='./', session=None):
 
     res_json_units = get_units(term_id, session=session)
     course_name = res_json_units.get('result', {}).get('mocTermDto', {}).get('courseName', term_id)
-    base_dir = os.path.join(base_dir, course_name)
-    if not os.path.exists(base_dir):
-        os.mkdir(base_dir)
-        print(f'创建课程文件夹 : {base_dir}')
+    base_dir = _mkdir(base_dir, course_name)
     moc_term_dto = res_json_units.get('result', {}).get('mocTermDto') or {}
     chapters = moc_term_dto.get('chapters') or []
     exams = moc_term_dto.get('exams') or []
     for chapter in chapters:
         chapter_name = chapter.get('name', 'unknown_chapter')
-        chapter_dir = os.path.join(base_dir, chapter_name)
-        if not os.path.exists(chapter_dir):
-            os.mkdir(chapter_dir)
-            print(f'创建文件夹 : {chapter_dir}')
+        chapter_dir = _mkdir(base_dir, chapter_name)
         lessons = chapter.get('lessons') or []
         for lesson in lessons:
             lesson_name = lesson.get('name', 'unknown_lesson')
-            lesson_dir = os.path.join(chapter_dir, lesson_name)
-            if not os.path.exists(lesson_dir):
-                os.mkdir(lesson_dir)
-                print('-- 创建文件夹 :', lesson_dir)
+            lesson_dir = _mkdir(chapter_dir, lesson_name)
             units = lesson.get('units') or []
             for unit in units:
                 unit_id = unit.get('id')
                 content_id = unit.get('contentId')
                 content_type = unit.get('contentType')
                 unit_name = unit.get('name', '未知资源')
-                unit_file_name = os.path.join(lesson_dir, unit_name)
-                print(f'---- 下载 unit: {unit_name} (ID: {unit_id}, Content ID: {content_id}, Type: {content_type})')
+                unit_file_name = _join_path(lesson_dir, unit_name)
+                print(f'---- 下载 unit: {unit_file_name} ----')
                 _down_unit(unit_id, content_id, content_type, unit_file_name)
 
 
 if __name__ == '__main__':
-    test_term_id = '1475968443'  # 替换为实际的term_id进行测试
+    # test_term_id = '1475968443'  # 程序设计入门——C语言
+    test_term_id = '1475637487'  # 一刻钟学会：游戏开发基础
     download_units(test_term_id)
