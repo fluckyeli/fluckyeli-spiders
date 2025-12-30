@@ -6,6 +6,7 @@ import os
 
 import requests
 
+from download_utils import simple_download
 from getLastLearnedMocTermDto import get_units
 from spider_unit.get_unit_type1 import get_video_url_type_1
 from spider_unit.get_unit_type3 import get_file_url_type_3
@@ -25,9 +26,11 @@ def _down_unit(unit_id, content_id, content_type, filename):
             mp4_url = json_res.get('mp4SdUrl')
 
         if mp4_url:
-            print(f'获取视频下载地址: {mp4_url}，正在下载...')
-            with open(f'{filename}.mp4', 'wb') as f:
-                f.write(requests.get(mp4_url).content)
+            if os.path.exists(f'{filename}.mp4'):
+                print(f'文件 {filename}.mp4 已存在，跳过下载。')
+                return
+            print(f"正在下载 {filename}.mp4 视频...")
+            simple_download(url=mp4_url, file_path=f'{filename}.mp4')
         else:
             print(f'{filename} 视频下载地址获取失败，无法下载该单元。')
 
@@ -38,11 +41,13 @@ def _down_unit(unit_id, content_id, content_type, filename):
             file_url = json_res.get('textOrigUrl')
 
         if file_url:
-            print("获取文件下载地址:", file_url, "，正在下载...")
             file_extention = file_url.split('download=')[-1].split('&')[0].split('.')[-1]
-            with open(f'{filename}.{file_extention}', 'wb') as f:
-                file_response = requests.get(file_url)
-                f.write(file_response.content)
+
+            if os.path.exists(f'{filename}.{file_extention}'):
+                print(f'文件 {filename}.{file_extention} 已存在，跳过下载。')
+                return
+            print(f"正在下载 {filename}.{file_extention} 文件...")
+            simple_download(url=file_url, file_path=f'{filename}.{file_extention}')
         else:
             print(f'{filename} 文件下载地址获取失败，无法下载该单元。')
 
@@ -50,7 +55,10 @@ def _down_unit(unit_id, content_id, content_type, filename):
         json_res = get_html_content_type_4(unit_id, content_id)
         html_content = json_res.get('htmlContent')
         if html_content:
-            print(f'获取富文本内容，正在保存...')
+            if os.path.exists(f'{filename}.html'):
+                print(f'文件 {filename}.html 已存在，跳过下载。')
+                return
+            print(f'获取富文本内容，正在保存 {filename}.html 文件...')
             with open(f'{filename}.html', 'w', encoding='utf-8') as f:
                 f.write(html_content)
         else:
@@ -59,19 +67,24 @@ def _down_unit(unit_id, content_id, content_type, filename):
     elif content_type == 5:
         json_res = get_testing_type_5(unit_id, content_id)
         if json_res:
-            print(f'获取测验内容，正在保存原始json...')
+            if os.path.exists(f'{filename}.json'):
+                print(f'文件 {filename}.json 已存在，跳过下载。')
+                return
+            print(f'获取测验内容，正在保存 {filename}.json 文件...')
             with open(f'{filename}.json', 'w', encoding='utf-8') as f:
                 f.write(json.dumps(json_res, ensure_ascii=False, indent=4))
         else:
             print(f'{filename} 测验内容获取失败，无法下载该单元。')
-
 
     elif content_type == 6:
         json_res = get_forum_type_6(unit_id, content_id)
         content = json_res.get('content')
         title = json_res.get('title')
         if content:
-            print(f'获取讨论内容，正在html文件')
+            if os.path.exists(f'{filename}.html'):
+                print(f'文件 {filename}.html 已存在，跳过下载。')
+                return
+            print(f'获取讨论内容，正在保存 {filename}.html 文件...')
             with open(f'{filename}.html', 'w', encoding='utf-8') as f:
                 f.write("<html><head><meta charset='utf-8'><title>")
                 f.write(title)
@@ -80,7 +93,6 @@ def _down_unit(unit_id, content_id, content_type, filename):
                 f.write("</body></html>")
         else:
             print(f'{filename} 讨论内容获取失败，无法下载该单元。')
-
     else:
         print(f'{filename} 下载时遇到未知的 content_type: {content_type}，无法下载该单元。')
 
@@ -90,20 +102,28 @@ def download_units(term_id, base_dir='./', session=None):
         session = init_logined_session()
 
     res_json_units = get_units(term_id, session=session)
-    chapters = res_json_units.get('result', {}).get('mocTermDto', {}).get('chapters', [])
-    exams = res_json_units.get('result', {}).get('mocTermDto', {}).get('exams', [])
+    course_name = res_json_units.get('result', {}).get('mocTermDto', {}).get('courseName', term_id)
+    base_dir = os.path.join(base_dir, course_name)
+    if not os.path.exists(base_dir):
+        os.mkdir(base_dir)
+        print(f'创建课程文件夹 : {base_dir}')
+    moc_term_dto = res_json_units.get('result', {}).get('mocTermDto') or {}
+    chapters = moc_term_dto.get('chapters') or []
+    exams = moc_term_dto.get('exams') or []
     for chapter in chapters:
         chapter_name = chapter.get('name', 'unknown_chapter')
         chapter_dir = os.path.join(base_dir, chapter_name)
-        os.mkdir(chapter_dir)
-        print(f'创建文件夹 : {chapter_dir}')
-        lessons = chapter.get('lessons', [])
+        if not os.path.exists(chapter_dir):
+            os.mkdir(chapter_dir)
+            print(f'创建文件夹 : {chapter_dir}')
+        lessons = chapter.get('lessons') or []
         for lesson in lessons:
             lesson_name = lesson.get('name', 'unknown_lesson')
             lesson_dir = os.path.join(chapter_dir, lesson_name)
-            os.mkdir(lesson_dir)
-            print('-- 创建文件夹 :', lesson_dir)
-            units = lesson.get('units', [])
+            if not os.path.exists(lesson_dir):
+                os.mkdir(lesson_dir)
+                print('-- 创建文件夹 :', lesson_dir)
+            units = lesson.get('units') or []
             for unit in units:
                 unit_id = unit.get('id')
                 content_id = unit.get('contentId')
@@ -115,5 +135,5 @@ def download_units(term_id, base_dir='./', session=None):
 
 
 if __name__ == '__main__':
-    test_term_id = '2024012345'  # 替换为实际的term_id进行测试
+    test_term_id = '1475968443'  # 替换为实际的term_id进行测试
     download_units(test_term_id)

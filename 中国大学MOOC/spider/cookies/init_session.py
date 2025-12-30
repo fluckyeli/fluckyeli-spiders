@@ -46,7 +46,7 @@ def init_logined_session():
     session.cookies = cookie_jar  # 绑定
     # 优先使用 cookies 登录，但需要保证 cookies 有效
     if os.path.exists(cookie_filename) and os.path.getmtime(cookie_filename) + 2 * 24 * 60 * 60 > time.time():
-        print("使用已保存的 cookies 登录 : ", cookie_filename)
+        # print("使用已保存的 cookies 登录 : ", cookie_filename)
         cookie_jar.load(cookie_filename, ignore_discard=True, ignore_expires=True)  # 保存 Cookie 到文件
         return session
     elif os.path.exists(passport_filename) and os.path.getmtime(passport_filename) + 10 * 24 * 60 * 60 > time.time():
