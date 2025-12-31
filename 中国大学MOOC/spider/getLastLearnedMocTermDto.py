@@ -38,7 +38,7 @@ def get_units(term_id, session=None):
 
 
 if __name__ == '__main__':
-    term_id = '1475968443'
+    term_id = '1475637487'
     res = get_units(term_id)
     with open('getLastLearnedMocTermDto.json', encoding='utf-8', mode='w') as fw:
         fw.write(json.dumps(res, indent=4, ensure_ascii=False))

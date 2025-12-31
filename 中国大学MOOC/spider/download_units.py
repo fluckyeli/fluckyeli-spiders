@@ -3,6 +3,7 @@
 """
 import json
 import os
+import sys
 
 import requests
 
@@ -59,6 +60,8 @@ def _down_unit(unit_id, content_id, content_type, filename):
             simple_download(url=mp4_url, file_path=f'{filename}.mp4')
         else:
             print(f'{filename} 视频下载地址获取失败，无法下载该单元。')
+            print(json.dumps(json_res, ensure_ascii=False))
+            sys.exit(-1)
 
     elif content_type == 3:
         json_res = get_file_url_type_3(unit_id, content_id)
