@@ -5,7 +5,7 @@ import sys
 from dir_utils import get_project_root
 
 
-def run_n_m3u8dl_cli(url, work_dir=None, save_name=None, exe_path=None, **kwargs):
+def run_n_m3u8dl_cli(url, work_dir=None, save_name=None, exe_path=None, save_temp=False, **kwargs):
     """
     封装调用 N_m3u8DL-CLI 并实时回显进度。
 
@@ -41,6 +41,8 @@ def run_n_m3u8dl_cli(url, work_dir=None, save_name=None, exe_path=None, **kwargs
         cmd.extend(['--workDir', work_dir])
     if save_name:
         cmd.extend(['--saveName', save_name])
+    if not save_temp:
+        cmd.extend(['--enableDelAfterDone'])
 
     # 处理其他关键字参数 (将 camelCase 转换为 CLI 参数格式)
     for key, value in kwargs.items():

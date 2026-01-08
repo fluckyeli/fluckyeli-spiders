@@ -1,3 +1,4 @@
+import os
 import time
 from 中国大学MOOC.spider.cookies.init_session import init_logined_session
 from utils.m3u8_download_utils import run_n_m3u8dl_cli
@@ -26,7 +27,7 @@ def _tokenEncrypt_python(bizId, bizType, contentType, timestamp, window_id=""):
     # MD5 哈希
     return hashlib.md5(plaintext.encode('utf-8')).hexdigest()
 
-def down_m3u8_mooc(unit_id='1305160316',filename='down.mp4'):
+def down_m3u8_mooc(unit_id='1305160316',filename='down'):
     session = init_logined_session()
 
     bizId = unit_id  # unit_id
@@ -70,7 +71,8 @@ def down_m3u8_mooc(unit_id='1305160316',filename='down.mp4'):
     res_json = response.json()
     # print(response.text)
     videoUrl = res_json.get('result').get('videos')[-1].get('videoUrl')
-    run_n_m3u8dl_cli(url=videoUrl, work_dir='',save_name='')
+    dir_path, file_name = os.path.split(filename)
+    run_n_m3u8dl_cli(url=videoUrl, work_dir=dir_path,save_name=file_name)
 
 if __name__ == '__main__':
     down_m3u8_mooc(unit_id='1305160317')

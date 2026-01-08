@@ -15,6 +15,7 @@ from spider_unit.get_unit_type4 import get_html_content_type_4
 from spider_unit.get_unit_type5 import get_testing_type_5
 from spider_unit.get_unit_type6 import get_forum_type_6
 from 中国大学MOOC.spider.cookies.init_session import init_logined_session
+from spider_unit.down_mooc_m3u8 import down_m3u8_mooc
 
 
 def _clean_filename(filename):
@@ -45,6 +46,9 @@ def _join_path(base, filename):
 
 def _down_unit(unit_id, content_id, content_type, filename):
     if content_type == 1:
+        if os.path.exists(f'{filename}.mp4') or os.path.exists(f'{filename}.flv'):
+            print(f'文件 {filename}.mp4 已存在，跳过下载。')
+            return
         json_res = get_video_url_type_1(unit_id, content_id)
         mp4_url = json_res.get('mp4ShdUrl')
         if not mp4_url:
@@ -53,15 +57,11 @@ def _down_unit(unit_id, content_id, content_type, filename):
             mp4_url = json_res.get('mp4SdUrl')
 
         if mp4_url:
-            if os.path.exists(f'{filename}.mp4'):
-                print(f'文件 {filename}.mp4 已存在，跳过下载。')
-                return
             print(f"正在下载 {filename}.mp4 视频...")
             simple_download(url=mp4_url, file_path=f'{filename}.mp4')
         else:
-            print(f'{filename} 视频下载地址获取失败，无法下载该单元。')
-            print(json.dumps(json_res, ensure_ascii=False))
-            sys.exit(-1)
+        # 没有 mp4 视频地址，尝试下载 m3u8 视频
+            down_m3u8_mooc(unit_id, f'{filename}')
 
     elif content_type == 3:
         json_res = get_file_url_type_3(unit_id, content_id)
@@ -81,12 +81,12 @@ def _down_unit(unit_id, content_id, content_type, filename):
             print(f'{filename} 文件下载地址获取失败，无法下载该单元。')
 
     elif content_type == 4:
+        if os.path.exists(f'{filename}.html'):
+            print(f'文件 {filename}.html 已存在，跳过下载。')
+            return
         json_res = get_html_content_type_4(unit_id, content_id)
         html_content = json_res.get('htmlContent')
         if html_content:
-            if os.path.exists(f'{filename}.html'):
-                print(f'文件 {filename}.html 已存在，跳过下载。')
-                return
             print(f'获取富文本内容，正在保存 {filename}.html 文件...')
             with open(f'{filename}.html', 'w', encoding='utf-8') as f:
                 f.write(html_content)
@@ -94,11 +94,11 @@ def _down_unit(unit_id, content_id, content_type, filename):
             print(f'{filename} 富文本内容获取失败，无法下载该单元。')
 
     elif content_type == 5:
+        if os.path.exists(f'{filename}.json'):
+            print(f'文件 {filename}.json 已存在，跳过下载。')
+            return
         json_res = get_testing_type_5(unit_id, content_id)
         if json_res:
-            if os.path.exists(f'{filename}.json'):
-                print(f'文件 {filename}.json 已存在，跳过下载。')
-                return
             print(f'获取测验内容，正在保存 {filename}.json 文件...')
             with open(f'{filename}.json', 'w', encoding='utf-8') as f:
                 f.write(json.dumps(json_res, ensure_ascii=False, indent=4))
@@ -106,13 +106,13 @@ def _down_unit(unit_id, content_id, content_type, filename):
             print(f'{filename} 测验内容获取失败，无法下载该单元。')
 
     elif content_type == 6:
+        if os.path.exists(f'{filename}.html'):
+            print(f'文件 {filename}.html 已存在，跳过下载。')
+            return
         json_res = get_forum_type_6(unit_id, content_id)
         content = json_res.get('content')
         title = json_res.get('title')
         if content:
-            if os.path.exists(f'{filename}.html'):
-                print(f'文件 {filename}.html 已存在，跳过下载。')
-                return
             print(f'获取讨论内容，正在保存 {filename}.html 文件...')
             with open(f'{filename}.html', 'w', encoding='utf-8') as f:
                 f.write("<html><head><meta charset='utf-8'><title>")
@@ -151,7 +151,11 @@ def download_units(term_id, base_dir='./', session=None):
                 unit_name = unit.get('name', '未知资源')
                 unit_file_name = _join_path(lesson_dir, unit_name)
                 print(f'---- 下载 unit: {unit_file_name} ----')
-                _down_unit(unit_id, content_id, content_type, unit_file_name)
+                try:
+                    _down_unit(unit_id, content_id, content_type, unit_file_name)
+                except Exception as e:
+                    print(f'下载单元 {unit_file_name} 时出错: {e}', file=sys.stderr)
+                    sys.exit(-1)
 
 
 if __name__ == '__main__':
