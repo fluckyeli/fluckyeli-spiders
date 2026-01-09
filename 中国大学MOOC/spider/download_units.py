@@ -5,17 +5,15 @@ import json
 import os
 import sys
 
-import requests
-
-from download_utils import simple_download
 from getLastLearnedMocTermDto import get_units
+from spider_unit.down_mooc_m3u8 import down_m3u8_mooc
 from spider_unit.get_unit_type1 import get_video_url_type_1
 from spider_unit.get_unit_type3 import get_file_url_type_3
 from spider_unit.get_unit_type4 import get_html_content_type_4
 from spider_unit.get_unit_type5 import get_testing_type_5
 from spider_unit.get_unit_type6 import get_forum_type_6
 from 中国大学MOOC.spider.cookies.init_session import init_logined_session
-from spider_unit.down_mooc_m3u8 import down_m3u8_mooc
+from 中国大学MOOC.spider.spider_unit.download_utils import simple_download
 
 
 def _clean_filename(filename):
@@ -60,7 +58,7 @@ def _down_unit(unit_id, content_id, content_type, filename):
             print(f"正在下载 {filename}.mp4 视频...")
             simple_download(url=mp4_url, file_path=f'{filename}.mp4')
         else:
-        # 没有 mp4 视频地址，尝试下载 m3u8 视频
+            # 没有 mp4 视频地址，尝试下载 m3u8 视频
             down_m3u8_mooc(unit_id, f'{filename}')
 
     elif content_type == 3:
@@ -160,5 +158,6 @@ def download_units(term_id, base_dir='./', session=None):
 
 if __name__ == '__main__':
     # test_term_id = '1475968443'  # 程序设计入门——C语言
-    test_term_id = '1475637487'  # 一刻钟学会：游戏开发基础
+    # test_term_id = '1475637487'  # 一刻钟学会：游戏开发基础
+    test_term_id = '1475140442'  # 人工智能：模型与算法
     download_units(test_term_id)
