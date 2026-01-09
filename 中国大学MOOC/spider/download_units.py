@@ -18,9 +18,9 @@ from 中国大学MOOC.spider.spider_unit.download_utils import simple_download
 
 def _clean_filename(filename):
     # 去除文件名不允许的特殊字符
-    return (filename.replace('？', '').replace('：', '').replace('、', '').replace('，', '').replace('！', '')
-            .replace('*', '').replace('"', '').replace('<', '').replace('>', '')
-            .replace('|', '').replace('\\', '').replace('/', '').strip())
+    return (filename.replace('?', '？').replace(':', '：').replace('\'', ' ').replace(',', '，').replace('!', '！')
+            .replace('*', ' ').replace('"', ' ').replace('<', ' ').replace('>', ' ')
+            .replace('|', ' ').replace('\\', ' ').replace('/', ' ').strip())
 
 
 def _mkdir(base, dir):
