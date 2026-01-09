@@ -17,11 +17,37 @@ from 中国大学MOOC.spider.spider_unit.download_utils import simple_download
 
 
 def _clean_filename(filename):
-    # 去除文件名不允许的特殊字符
-    return (filename.replace('?', '？').replace(':', '：').replace('\'', ' ').replace(',', '，').replace('!', '！')
-            .replace('*', ' ').replace('"', ' ').replace('<', ' ').replace('>', ' ')
-            .replace('|', ' ').replace('\\', ' ').replace('/', ' ').strip())
+    """
+    清理文件名，替换特殊字符为安全字符
+    """
+    # Windows文件名中不允许的字符及其替换
+    replacements = {
+        ':': '：',  # 中文冒号
+        '<': '＜',
+        '>': '＞',
+        '"': '＂',
+        '/': '／',
+        '\\': '＼',
+        '|': '｜',
+        '?': '？',
+        '*': '＊'
+    }
 
+    # 替换所有非法字符
+    for illegal, replacement in replacements.items():
+        filename = filename.replace(illegal, replacement)
+
+    # 移除控制字符（0x00-0x1F）
+    filename = ''.join(char for char in filename if ord(char) >= 32)
+
+    # 移除开头和结尾的空格和点
+    filename = filename.strip().rstrip('.')
+
+    # 如果为空，使用默认名称
+    if not filename:
+        filename = "unnamed_folder"
+
+    return filename
 
 def _mkdir(base, dir):
     # 去除文件夹不允许的特殊字符
