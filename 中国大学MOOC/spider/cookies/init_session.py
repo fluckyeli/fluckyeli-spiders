@@ -15,6 +15,20 @@ from 中国大学MOOC.login_flow.powGetP import get_pVParam
 warnings.filterwarnings("ignore")
 
 
+def valid_cookie(cookie_jar):
+    """检查Cookie是否有效"""
+    if len(cookie_jar) == 0:
+        return False  # CookieJar 为空，说明没有有效的Cookie
+
+    current_time = time.time()  # 获取当前时间戳
+    for cookie in cookie_jar:
+        # 检查是否有过期时间
+        if cookie.expires:
+            # 如果过期时间小于当前时间，说明已过期
+            if cookie.expires < current_time:
+                return False
+    return True
+
 def __get_headers():
     return {
         'accept': '*/*',
@@ -37,36 +51,19 @@ def __get_headers():
 def init_logined_session():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     account_filename = f'{current_dir}/account.tmp'  # 账号密码文件
-    passport_filename = f'{current_dir}/passport.tmp'  # 10 天有效期Cookie
-    cookie_filename = f'{current_dir}/cookies.tmp'  # 2 天有效期Cookie
+    cookie_filename = f'{current_dir}/cookies.tmp'  # 10 天有效期Cookie
 
     session = Session()
     session.headers = __get_headers()
     cookie_jar = MozillaCookieJar()
     session.cookies = cookie_jar  # 绑定
     # 优先使用 cookies 登录，但需要保证 cookies 有效
-    if os.path.exists(cookie_filename) and os.path.getmtime(cookie_filename) + 2 * 24 * 60 * 60 > time.time():
+    if os.path.exists(cookie_filename):
         # print("使用已保存的 cookies 登录 : ", cookie_filename)
-        cookie_jar.load(cookie_filename, ignore_discard=True, ignore_expires=True)  # 保存 Cookie 到文件
-        return session
-    elif os.path.exists(passport_filename) and os.path.getmtime(passport_filename) + 10 * 24 * 60 * 60 > time.time():
-        print("使用已保存的 passport 登录 : ", passport_filename)
-        cookie_jar.load(passport_filename, ignore_discard=True, ignore_expires=True)
-        # 获取并设置MOOC身份标识 Cookie: STUDY_INFO、STUDY_PERSIST、STUDY_SESS
-        params = {
-            'type': 'urs',
-            'returnUrl': 'aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcv',
-            'edusave': '1',
-            'loginWay': '0',
-        }
-        session.get(
-            'https://www.icourse163.org/passport/logingate/changeCookie.htm',
-            params=params,
-            verify=False,
-        )
+        cookie_jar.load(cookie_filename, ignore_expires=True)  # 保存 Cookie 到文件
+    if valid_cookie(cookie_jar):
+        print("使用已保存且有效的 cookies 登录 : ", cookie_filename)
         session.get('https://www.icourse163.org/home.htm')
-        print(f"保存cookies : ", cookie_filename)
-        cookie_jar.save(cookie_filename, ignore_expires=True, ignore_discard=True)
         return session
     else:
         # 使用账号密码登录
@@ -83,9 +80,22 @@ def init_logined_session():
         time.sleep(random.randint(3, 5))
         # SSO单点登录: 获取网易单点登录的 NTES_PASSPORT
         login(session, email, password, cookies_email, tk, pVParam)
-        print("保存passport : ", passport_filename)
-        cookie_jar.save(passport_filename, ignore_discard=True, ignore_expires=True)  # 保存passport 到文件（！敏感：通行证类似于账号密码）
-        return init_logined_session()
+        # 获取并设置MOOC身份标识 Cookie: STUDY_INFO、STUDY_PERSIST、STUDY_SESS
+        params = {
+            'type': 'urs',
+            'returnUrl': 'aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcv',
+            'edusave': '1',
+            'loginWay': '0',
+        }
+        session.get(
+            'https://www.icourse163.org/passport/logingate/changeCookie.htm',
+            params=params,
+            verify=False,
+        )
+        session.get('https://www.icourse163.org/home.htm')
+        print(f"保存cookies : ", cookie_filename)
+        cookie_jar.save(cookie_filename)
+        return session
 
 
 if __name__ == '__main__':
